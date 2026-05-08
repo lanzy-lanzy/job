@@ -1,0 +1,166 @@
+{% extends 'jobs/base.html' %}
+
+{% block title %}Saved Jobs - JobHub{% endblock %}
+
+{% block navbar %}
+<nav class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="flex justify-between items-center h-16">
+            <a href="{% url 'home' %}" class="flex items-center gap-2 text-xl font-bold text-blue-600">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                JobHub
+            </a>
+
+            <div class="hidden md:flex items-center gap-6">
+                <a href="{% url 'applicant_dashboard' %}" class="text-slate-600 hover:text-blue-600 transition">Dashboard</a>
+                <a href="{% url 'saved_jobs' %}" class="text-slate-600 hover:text-blue-600 transition {% if request.resolver_match.url_name == 'saved_jobs' %}text-blue-600 font-medium{% endif %}">Saved Jobs</a>
+                <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                    <span class="text-sm text-slate-500">Hello, {{ user.username }}</span>
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="flex items-center gap-2 text-slate-600 hover:text-blue-600">
+                            <span class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-sm font-medium">{{ user.username|slice:":1"|upper }}</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div x-show="open" @click.outside="open = false" x-cloak class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 py-2 z-50">
+                            <a href="{% url 'applicant_profile' %}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">My Profile</a>
+                            <a href="{% url 'applicant_logout' %}" class="block px-4 py-2 text-sm text-red-600 hover:bg-slate-50">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button @click="mobileMenu = !mobileMenu" class="md:hidden p-2 text-slate-600" aria-label="Menu">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path x-show="!mobileMenu" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    <path x-show="mobileMenu" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+
+        <div x-show="mobileMenu" x-cloak class="md:hidden pb-4 space-y-3">
+            <a href="{% url 'applicant_dashboard' %}" class="block py-2 text-slate-600">Dashboard</a>
+            <a href="{% url 'saved_jobs' %}" class="block py-2 text-slate-600">Saved Jobs</a>
+            <a href="{% url 'applicant_profile' %}" class="block py-2 text-slate-600">My Profile</a>
+            <a href="{% url 'applicant_logout' %}" class="block py-2 text-red-600">Logout</a>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="mb-8">
+        <a href="{% url 'applicant_dashboard' %}" class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 mb-4">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            Back to Dashboard
+        </a>
+        <h1 class="text-2xl font-bold text-slate-900">Saved Jobs</h1>
+        <p class="text-slate-500 mt-1">Jobs you've saved for later</p>
+    </div>
+
+    {% if not saved_jobs %}
+    <div class="bg-white rounded-xl border border-slate-200 p-12 text-center">
+        <svg class="w-16 h-16 mx-auto text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+        </svg>
+        <h3 class="text-xl font-semibold text-slate-900 mb-2">No saved jobs yet</h3>
+        <p class="text-slate-500 mb-6 max-w-md mx-auto">You haven't saved any jobs yet. Browse available positions and save jobs you're interested in.</p>
+        <a href="{% url 'home' %}" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            Browse Jobs
+        </a>
+    </div>
+    {% else %}
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for saved in saved_jobs %}
+        {% with job=saved.job %}
+        <div class="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-md transition">
+            <div class="p-6">
+                <div class="flex justify-between items-start mb-3">
+                    <span class="px-2 py-1 text-xs font-medium rounded-full
+                        {% if job.status == 'Open' %}bg-green-100 text-green-700{% else %}bg-slate-100 text-slate-700{% endif %}">
+                        {{ job.status }}
+                    </span>
+                    {% if user.is_authenticated and not user.is_staff %}
+                    <button hx-post="{% url 'unsave_job' job.id %}"
+                            hx-swap="outerHTML"
+                            hx-target="closest .job-card"
+                            class="text-red-500 hover:text-red-700 p-1">
+                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    </button>
+                    {% endif %}
+                </div>
+                <h3 class="text-lg font-semibold text-slate-900 mb-1 line-clamp-2">{{ job.title }}</h3>
+                <p class="text-slate-500 mb-3">{{ job.company_name }}</p>
+                <div class="space-y-1 text-sm text-slate-500 mb-4">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        {{ job.location }}
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        {{ job.job_type }}
+                    </div>
+                    {% if job.salary_range %}
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        {{ job.salary_range }}
+                    </div>
+                    {% endif %}
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        Deadline: {{ job.deadline|date:"M d, Y" }}
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <a href="{% url 'job_detail' job.id %}" class="flex-1 text-center py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition text-sm">
+                        View Details
+                    </a>
+                    {% if job.status == 'Open' %}
+                    <button @click="applyModal = true"
+                            hx-get="{% url 'apply_modal' job.id %}"
+                            hx-target="#apply-modal-body"
+                            class="flex-1 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm">
+                        Apply
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endwith %}
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<!-- Modal Container -->
+<div x-data="{ applyModal: false }" @keydown.escape.window="applyModal = false" @close-modal.window="applyModal = false">
+    <div x-show="applyModal"
+         x-cloak
+         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0">
+        <div @click.outside="applyModal = false"
+             class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100">
+            <div class="flex justify-between items-center p-4 border-b border-slate-200">
+                <h3 class="text-lg font-semibold text-slate-900">Apply for Position</h3>
+                <button @click="applyModal = false" class="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div id="apply-modal-body" class="p-4 overflow-y-auto max-h-[calc(90vh-130px)]"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
