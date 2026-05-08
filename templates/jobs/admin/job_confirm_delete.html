@@ -1,0 +1,52 @@
+{% extends 'jobs/base.html' %}
+
+{% block title %}Delete Job - JobHub Admin{% endblock %}
+
+{% block navbar %}
+<nav class="bg-slate-900 text-white">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="flex justify-between items-center h-16">
+            <a href="{% url 'admin_dashboard' %}" class="flex items-center gap-2 text-xl font-bold">
+                <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                JobHub Admin
+            </a>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto px-4 py-8">
+    <div class="bg-white rounded-xl border border-slate-200 p-6">
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+                <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            </div>
+            <h3 class="text-lg font-semibold text-slate-900">Delete Job Post?</h3>
+        </div>
+
+        <p class="text-slate-600 mb-6">
+            Are you sure you want to delete <strong class="text-slate-900">"{{ job.title }}"</strong>?
+            This action cannot be undone and will remove all associated applications.
+        </p>
+
+        <div class="bg-slate-50 rounded-lg p-4 mb-6">
+            <div class="text-sm text-slate-600">
+                <p><strong>Company:</strong> {{ job.company_name }}</p>
+                <p><strong>Location:</strong> {{ job.location }}</p>
+                <p><strong>Applications:</strong> {{ job.applications.count }}</p>
+            </div>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="flex justify-end gap-3">
+                <a href="{% url 'admin_job_list' %}" class="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition">Cancel</a>
+                <button type="submit" class="px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition">Delete Job</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
