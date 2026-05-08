@@ -1,0 +1,106 @@
+<script>
+    // Theme configuration for four color themes (both light and dark modes)
+    const themes = {
+        blue: {
+            light: {
+                primary50: '#eff6ff', primary100: '#dbeafe', primary200: '#bfdbfe',
+                primary300: '#93c5fd', primary400: '#60a5fa', primary500: '#3b82f6',
+                primary600: '#2563eb', primary700: '#1d4ed8', primary800: '#1e40af', primary900: '#1e3a8a',
+                bg: '#f8fafc', cardBg: '#ffffff', text: '#0f172a', textSecondary: '#64748b'
+            },
+            dark: {
+                primary50: '#1e3a8a', primary100: '#1e40af', primary200: '#1d4ed8',
+                primary300: '#2563eb', primary400: '#3b82f6', primary500: '#60a5fa',
+                primary600: '#93c5fd', primary700: '#bfdbfe', primary800: '#dbeafe', primary900: '#eff6ff',
+                bg: '#0f172a', cardBg: '#1e293b', text: '#f1f5f9', textSecondary: '#94a3b8'
+            }
+        },
+        green: {
+            light: {
+                primary50: '#f0fdf4', primary100: '#dcfce7', primary200: '#bbf7d0',
+                primary300: '#86efac', primary400: '#4ade80', primary500: '#22c55e',
+                primary600: '#16a34a', primary700: '#15803d', primary800: '#166534', primary900: '#14532d',
+                bg: '#f0fdf4', cardBg: '#ffffff', text: '#14532d', textSecondary: '#4b5563'
+            },
+            dark: {
+                primary50: '#14532d', primary100: '#166534', primary200: '#15803d',
+                primary300: '#16a34a', primary400: '#22c55e', primary500: '#4ade80',
+                primary600: '#86efac', primary700: '#bbf7d0', primary800: '#dcfce7', primary900: '#f0fdf4',
+                bg: '#052e16', cardBg: '#14532d', text: '#f0fdf4', textSecondary: '#86efac'
+            }
+        },
+        purple: {
+            light: {
+                primary50: '#faf5ff', primary100: '#f3e8ff', primary200: '#e9d5ff',
+                primary300: '#d8b4fe', primary400: '#c084fc', primary500: '#a855f7',
+                primary600: '#9333ea', primary700: '#7c3aed', primary800: '#6b21a8', primary900: '#581c87',
+                bg: '#faf5ff', cardBg: '#ffffff', text: '#581c87', textSecondary: '#6b21a8'
+            },
+            dark: {
+                primary50: '#581c87', primary100: '#6b21a8', primary200: '#7c3aed',
+                primary300: '#9333ea', primary400: '#a855f7', primary500: '#c084fc',
+                primary600: '#d8b4fe', primary700: '#e9d5ff', primary800: '#f3e8ff', primary900: '#faf5ff',
+                bg: '#0c0a1d', cardBg: '#1e1b4b', text: '#faf5ff', textSecondary: '#c4b5fd'
+            }
+        },
+        orange: {
+            light: {
+                primary50: '#fff7ed', primary100: '#ffedd5', primary200: '#fed7aa',
+                primary300: '#fdba74', primary400: '#fb923c', primary500: '#f97316',
+                primary600: '#ea580c', primary700: '#c2410c', primary800: '#9a3412', primary900: '#7c2d12',
+                bg: '#fff7ed', cardBg: '#ffffff', text: '#7c2d12', textSecondary: '#9a3412'
+            },
+            dark: {
+                primary50: '#7c2d12', primary100: '#9a3412', primary200: '#c2410c',
+                primary300: '#ea580c', primary400: '#f97316', primary500: '#fb923c',
+                primary600: '#fdba74', primary700: '#fed7aa', primary800: '#ffedd5', primary900: '#fff7ed',
+                bg: '#1c0a00', cardBg: '#431407', text: '#fff7ed', textSecondary: '#fdba74'
+            }
+        }
+    };
+
+    // Apply theme colors to CSS custom properties
+    function applyTheme(themeName, isDark) {
+        const theme = themes[themeName][isDark ? 'dark' : 'light'];
+        const root = document.documentElement;
+
+        root.style.setProperty('--theme-primary-50', theme.primary50);
+        root.style.setProperty('--theme-primary-100', theme.primary100);
+        root.style.setProperty('--theme-primary-200', theme.primary200);
+        root.style.setProperty('--theme-primary-300', theme.primary300);
+        root.style.setProperty('--theme-primary-400', theme.primary400);
+        root.style.setProperty('--theme-primary-500', theme.primary500);
+        root.style.setProperty('--theme-primary-600', theme.primary600);
+        root.style.setProperty('--theme-primary-700', theme.primary700);
+        root.style.setProperty('--theme-primary-800', theme.primary800);
+        root.style.setProperty('--theme-primary-900', theme.primary900);
+        root.style.setProperty('--theme-bg', theme.bg);
+        root.style.setProperty('--theme-card-bg', theme.cardBg);
+        root.style.setProperty('--theme-text', theme.text);
+        root.style.setProperty('--theme-text-secondary', theme.textSecondary);
+    }
+
+    // Initialize theme from localStorage or system preference
+    (function initTheme() {
+        const savedTheme = localStorage.getItem('jobhub-theme') || 'blue';
+        const savedDark = localStorage.getItem('jobhub-dark') !== 'false' &&
+                          (localStorage.getItem('jobhub-dark') === 'true' ||
+                           window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+        applyTheme(savedTheme, savedDark);
+
+        if (savedDark) {
+            document.documentElement.classList.add('dark');
+        }
+
+        // Update Tailwind with current theme colors
+        const theme = themes[savedTheme][savedDark ? 'dark' : 'light'];
+        tailwind.config.theme.extend.colors = {
+            primary: {
+                50: theme.primary50, 100: theme.primary100, 200: theme.primary200,
+                300: theme.primary300, 400: theme.primary400, 500: theme.primary500,
+                600: theme.primary600, 700: theme.primary700, 800: theme.primary800, 900: theme.primary900
+            }
+        };
+    })();
+</script>
