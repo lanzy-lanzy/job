@@ -1,0 +1,131 @@
+{% extends 'jobs/base.html' %}
+
+{% block title %}My Profile - JobHub{% endblock %}
+
+{% block navbar %}
+<nav class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="flex justify-between items-center h-16">
+            <a href="{% url 'home' %}" class="flex items-center gap-2 text-xl font-bold text-blue-600">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                JobHub
+            </a>
+
+            <div class="hidden md:flex items-center gap-6">
+                <a href="{% url 'applicant_dashboard' %}" class="text-slate-600 hover:text-blue-600 transition">Dashboard</a>
+                <a href="{% url 'saved_jobs' %}" class="text-slate-600 hover:text-blue-600 transition">Saved Jobs</a>
+                <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                    <span class="text-sm text-slate-500">Hello, {{ user.username }}</span>
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="flex items-center gap-2 text-slate-600 hover:text-blue-600">
+                            <span class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-sm font-medium">{{ user.username|slice:":1"|upper }}</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div x-show="open" @click.outside="open = false" x-cloak class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 py-2 z-50">
+                            <a href="{% url 'applicant_profile' %}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">My Profile</a>
+                            <a href="{% url 'applicant_logout' %}" class="block px-4 py-2 text-sm text-red-600 hover:bg-slate-50">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button @click="mobileMenu = !mobileMenu" class="md:hidden p-2 text-slate-600" aria-label="Menu">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path x-show="!mobileMenu" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    <path x-show="mobileMenu" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+
+        <div x-show="mobileMenu" x-cloak class="md:hidden pb-4 space-y-3">
+            <a href="{% url 'applicant_dashboard' %}" class="block py-2 text-slate-600">Dashboard</a>
+            <a href="{% url 'saved_jobs' %}" class="block py-2 text-slate-600">Saved Jobs</a>
+            <a href="{% url 'applicant_profile' %}" class="block py-2 text-slate-600">My Profile</a>
+            <a href="{% url 'applicant_logout' %}" class="block py-2 text-red-600">Logout</a>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-8">
+    <div class="mb-8">
+        <a href="{% url 'applicant_dashboard' %}" class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 mb-4">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            Back to Dashboard
+        </a>
+        <h1 class="text-2xl font-bold text-slate-900">My Profile</h1>
+        <p class="text-slate-500 mt-1">Manage your account information</p>
+    </div>
+
+    <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+
+        <!-- Account Info -->
+        <div class="p-6 border-b border-slate-200">
+            <h2 class="text-lg font-semibold text-slate-900 mb-4">Account Information</h2>
+            <div class="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                    <span class="text-slate-500">Username</span>
+                    <p class="font-medium text-slate-900">{{ user.username }}</p>
+                </div>
+                <div>
+                    <span class="text-slate-500">Email</span>
+                    <p class="font-medium text-slate-900">{{ user.email }}</p>
+                </div>
+                <div>
+                    <span class="text-slate-500">Name</span>
+                    <p class="font-medium text-slate-900">{{ user.first_name }} {{ user.last_name }}</p>
+                </div>
+                <div>
+                    <span class="text-slate-500">Member Since</span>
+                    <p class="font-medium text-slate-900">{{ user.date_joined|date:"M d, Y" }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Form -->
+        <div class="p-6">
+            <h2 class="text-lg font-semibold text-slate-900 mb-4">Profile Details</h2>
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="mb-4 p-4 rounded-lg {% if message.tags == 'success' %}bg-green-50 text-green-700 border border-green-200{% else %}bg-red-50 text-red-700 border border-red-200{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            <form method="post" enctype="multipart/form-data" class="space-y-4">
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ field.errors.0 }}</p>
+                    {% endif %}
+                    {% if field.help_text %}
+                    <p class="mt-1 text-sm text-slate-500">{{ field.help_text }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                {% if form.non_field_errors %}
+                <div class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+                    {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="pt-4">
+                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
