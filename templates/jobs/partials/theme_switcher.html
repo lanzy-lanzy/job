@@ -1,0 +1,169 @@
+<!-- Theme Switcher Button (Floating) -->
+<div class="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
+    <!-- Theme Settings Toggle -->
+    <button
+        @click="themeDrawer = !themeDrawer"
+        class="bg-white dark:bg-slate-800 shadow-lg rounded-full p-3 hover:scale-110 transition-transform border border-slate-200 dark:border-slate-700"
+        :class="{ 'ring-2 ring-offset-2 ring-primary-500': themeDrawer }"
+    >
+        <svg class="w-6 h-6 text-slate-600 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+        </svg>
+    </button>
+
+    <!-- Theme Drawer -->
+    <div
+        x-show="themeDrawer"
+        x-cloak
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 translate-y-2 scale-95"
+        x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+        x-transition:leave-end="opacity-0 translate-y-2 scale-95"
+        class="bg-white dark:bg-slate-800 shadow-xl rounded-2xl p-5 w-72 border border-slate-200 dark:border-slate-700"
+    >
+        <h3 class="font-semibold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+            </svg>
+            Customize Theme
+        </h3>
+
+        <!-- Dark Mode Toggle -->
+        <div class="flex items-center justify-between mb-5 pb-4 border-b border-slate-200 dark:border-slate-700">
+            <span class="text-sm font-medium text-slate-700 dark:text-slate-300">Dark Mode</span>
+            <button
+                @click="toggleDark()"
+                class="relative w-14 h-7 rounded-full transition-colors duration-200"
+                :class="isDark() ? 'bg-primary-600' : 'bg-slate-300 dark:bg-slate-600'"
+            >
+                <span
+                    class="absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200"
+                    :class="isDark() ? 'left-8' : 'left-1'"
+                ></span>
+            </button>
+        </div>
+
+        <!-- Color Themes -->
+        <div class="space-y-3">
+            <p class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">Color Theme</p>
+            <div class="grid grid-cols-4 gap-3">
+                <!-- Blue Theme -->
+                <button
+                    @click="setTheme('blue')"
+                    class="group flex flex-col items-center gap-1.5 p-2 rounded-xl transition-all"
+                    :class="currentTheme === 'blue' ? 'bg-slate-100 dark:bg-slate-700 ring-2 ring-primary-500' : 'hover:bg-slate-50 dark:hover:bg-slate-700'"
+                >
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 shadow-sm"></div>
+                    <span class="text-xs" :class="currentTheme === 'blue' ? 'font-medium text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400'">Blue</span>
+                </button>
+
+                <!-- Green Theme -->
+                <button
+                    @click="setTheme('green')"
+                    class="group flex flex-col items-center gap-1.5 p-2 rounded-xl transition-all"
+                    :class="currentTheme === 'green' ? 'bg-slate-100 dark:bg-slate-700 ring-2 ring-green-500' : 'hover:bg-slate-50 dark:hover:bg-slate-700'"
+                >
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-green-600 shadow-sm"></div>
+                    <span class="text-xs" :class="currentTheme === 'green' ? 'font-medium text-green-600 dark:text-green-400' : 'text-slate-500 dark:text-slate-400'">Green</span>
+                </button>
+
+                <!-- Purple Theme -->
+                <button
+                    @click="setTheme('purple')"
+                    class="group flex flex-col items-center gap-1.5 p-2 rounded-xl transition-all"
+                    :class="currentTheme === 'purple' ? 'bg-slate-100 dark:bg-slate-700 ring-2 ring-purple-500' : 'hover:bg-slate-50 dark:hover:bg-slate-700'"
+                >
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 shadow-sm"></div>
+                    <span class="text-xs" :class="currentTheme === 'purple' ? 'font-medium text-purple-600 dark:text-purple-400' : 'text-slate-500 dark:text-slate-400'">Purple</span>
+                </button>
+
+                <!-- Orange Theme -->
+                <button
+                    @click="setTheme('orange')"
+                    class="group flex flex-col items-center gap-1.5 p-2 rounded-xl transition-all"
+                    :class="currentTheme === 'orange' ? 'bg-slate-100 dark:bg-slate-700 ring-2 ring-orange-500' : 'hover:bg-slate-50 dark:hover:bg-slate-700'"
+                >
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 shadow-sm"></div>
+                    <span class="text-xs" :class="currentTheme === 'orange' ? 'font-medium text-orange-600 dark:text-orange-400' : 'text-slate-500 dark:text-slate-400'">Orange</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Global Alpine Theme State -->
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('themeSwitcher', () => ({
+            init() {
+                this.theme = localStorage.getItem('jobhub-theme') || 'blue';
+                this.dark = localStorage.getItem('jobhub-dark') !== 'false' &&
+                            (localStorage.getItem('jobhub-dark') === 'true' ||
+                             window.matchMedia('(prefers-color-scheme: dark)').matches);
+            }
+        }));
+    });
+
+    function currentTheme() {
+        return localStorage.getItem('jobhub-theme') || 'blue';
+    }
+
+    function setTheme(theme) {
+        const isDark = document.documentElement.classList.contains('dark');
+        localStorage.setItem('jobhub-theme', theme);
+
+        // Re-apply theme colors
+        applyTheme(theme, isDark);
+
+        // Update Tailwind dynamic colors
+        const themeColors = themes[theme][isDark ? 'dark' : 'light'];
+        tailwind.config.theme.extend.colors = {
+            primary: {
+                50: themeColors.primary50, 100: themeColors.primary100, 200: themeColors.primary200,
+                300: themeColors.primary300, 400: themeColors.primary400, 500: themeColors.primary500,
+                600: themeColors.primary600, 700: themeColors.primary700, 800: themeColors.primary800, 900: themeColors.primary900
+            }
+        };
+
+        // Trigger Tailwind to re-process (force repaint)
+        const el = document.querySelector('main');
+        if (el) {
+            el.style.display = 'none';
+            el.offsetHeight;
+            el.style.display = '';
+        }
+    }
+
+    function isDark() {
+        return document.documentElement.classList.contains('dark');
+    }
+
+    function toggleDark() {
+        const html = document.documentElement;
+        const isDark = html.classList.contains('dark');
+
+        if (isDark) {
+            html.classList.remove('dark');
+            localStorage.setItem('jobhub-dark', 'false');
+        } else {
+            html.classList.add('dark');
+            localStorage.setItem('jobhub-dark', 'true');
+        }
+
+        // Re-apply current theme with new dark mode
+        const theme = localStorage.getItem('jobhub-theme') || 'blue';
+        applyTheme(theme, !isDark);
+
+        // Update Tailwind colors
+        const themeColors = themes[theme][!isDark ? 'dark' : 'light'];
+        tailwind.config.theme.extend.colors = {
+            primary: {
+                50: themeColors.primary50, 100: themeColors.primary100, 200: themeColors.primary200,
+                300: themeColors.primary300, 400: themeColors.primary400, 500: themeColors.primary500,
+                600: themeColors.primary600, 700: themeColors.primary700, 800: themeColors.primary800, 900: themeColors.primary900
+            }
+        };
+    }
+</script>
