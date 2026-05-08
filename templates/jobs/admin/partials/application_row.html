@@ -1,0 +1,43 @@
+<tr id="application-row-{{ application.id }}" class="hover:bg-slate-50">
+    <td class="px-6 py-4">
+        <div class="font-medium text-slate-900">{{ application.full_name }}</div>
+        <div class="text-sm text-slate-500">{{ application.address|truncatechars:40 }}</div>
+    </td>
+    <td class="px-6 py-4">
+        <div class="text-sm text-slate-700">{{ application.email }}</div>
+        <div class="text-sm text-slate-500">{{ application.phone }}</div>
+    </td>
+    <td class="px-6 py-4">
+        {% if application.resume %}
+        <a href="{{ application.resume.url }}" download class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            Download
+        </a>
+        {% else %}
+        <span class="text-sm text-slate-400">No resume</span>
+        {% endif %}
+    </td>
+    <td class="px-6 py-4">
+        <form method="post" action="{% url 'update_application_status' application.id %}">
+            {% csrf_token %}
+            <select name="status"
+                    hx-post="{% url 'update_application_status' application.id %}"
+                    hx-trigger="change"
+                    hx-swap="outerHTML"
+                    class="text-sm px-3 py-1.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                    {% if application.status == 'Pending' %}bg-yellow-50 text-yellow-700 border-yellow-200
+                    {% elif application.status == 'Reviewed' %}bg-blue-50 text-blue-700 border-blue-200
+                    {% elif application.status == 'Interview' %}bg-purple-50 text-purple-700 border-purple-200
+                    {% elif application.status == 'Accepted' %}bg-green-50 text-green-700 border-green-200
+                    {% else %}bg-red-50 text-red-700 border-red-200{% endif %}">
+                {% for status_val, status_label in status_choices %}
+                <option value="{{ status_val }}" {% if application.status == status_val %}selected{% endif %}>{{ status_label }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </td>
+    <td class="px-6 py-4 text-sm text-slate-500">
+        {{ application.applied_date|date:"M d, Y" }}<br>
+        <span class="text-xs">{{ application.applied_date|date:"g:i A" }}</span>
+    </td>
+</tr>
