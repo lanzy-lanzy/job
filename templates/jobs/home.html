@@ -1,0 +1,125 @@
+{% extends 'jobs/base.html' %}
+
+{% block title %}JobHub - Find Your Dream Job{% endblock %}
+
+{% block navbar %}
+<nav class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="flex justify-between items-center h-16">
+            <a href="{% url 'home' %}" class="flex items-center gap-2 text-xl font-bold text-primary-600 dark:text-primary-400">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                <span class="hidden sm:inline">JobHub</span>
+            </a>
+
+            <div class="hidden md:flex items-center gap-6">
+                <a href="{% url 'home' %}" class="text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 transition">Jobs</a>
+                {% if user.is_authenticated and user.is_staff %}
+                <a href="{% url 'admin_dashboard' %}" class="text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 transition">Dashboard</a>
+                <a href="{% url 'admin_job_list' %}" class="text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 transition">Manage Jobs</a>
+                <div class="flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-slate-600">
+                    <span class="text-sm text-slate-500 dark:text-slate-400">Admin</span>
+                    <a href="{% url 'logout' %}" class="text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium">Logout</a>
+                </div>
+                {% elif user.is_authenticated and not user.is_staff %}
+                <a href="{% url 'applicant_dashboard' %}" class="text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 transition">Dashboard</a>
+                <a href="{% url 'saved_jobs' %}" class="text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 transition">Saved Jobs</a>
+                <div class="flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-slate-600">
+                    <span class="text-sm text-slate-500 dark:text-slate-400">{{ user.username }}</span>
+                    <a href="{% url 'applicant_logout' %}" class="text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium">Logout</a>
+                </div>
+                {% else %}
+                <a href="{% url 'applicant_login' %}" class="px-4 py-2 text-primary-600 dark:text-primary-400 border border-primary-600 dark:border-primary-400 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/30 transition font-medium">Job Seeker Login</a>
+                <a href="{% url 'login' %}" class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition font-medium">Admin Login</a>
+                {% endif %}
+            </div>
+
+            <button @click="mobileMenu = !mobileMenu" class="md:hidden p-2 text-slate-600 dark:text-slate-300" aria-label="Menu">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path x-show="!mobileMenu" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    <path x-show="mobileMenu" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+
+        <div x-show="mobileMenu" x-cloak class="md:hidden pb-4 space-y-3">
+            <a href="{% url 'home' %}" class="block py-2 text-slate-600 dark:text-slate-300">Jobs</a>
+            {% if user.is_authenticated and user.is_staff %}
+            <a href="{% url 'admin_dashboard' %}" class="block py-2 text-slate-600 dark:text-slate-300">Dashboard</a>
+            <a href="{% url 'admin_job_list' %}" class="block py-2 text-slate-600 dark:text-slate-300">Manage Jobs</a>
+            <a href="{% url 'logout' %}" class="block py-2 text-red-600 dark:text-red-400">Logout</a>
+            {% elif user.is_authenticated and not user.is_staff %}
+            <a href="{% url 'applicant_dashboard' %}" class="block py-2 text-slate-600 dark:text-slate-300">Dashboard</a>
+            <a href="{% url 'saved_jobs' %}" class="block py-2 text-slate-600 dark:text-slate-300">Saved Jobs</a>
+            <a href="{% url 'applicant_logout' %}" class="block py-2 text-red-600 dark:text-red-400">Logout</a>
+            {% else %}
+            <a href="{% url 'applicant_login' %}" class="block py-2 text-primary-600 dark:text-primary-400 font-medium">Job Seeker Login</a>
+            <a href="{% url 'applicant_register' %}" class="block py-2 text-primary-600 dark:text-primary-400 font-medium">Register</a>
+            <a href="{% url 'login' %}" class="block py-2 text-green-600 dark:text-green-400 font-medium">Admin Login</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<section class="bg-gradient-to-br from-primary-600 to-primary-800 dark:from-primary-700 dark:to-primary-900 text-white py-16">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="max-w-2xl">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Find Your Dream Job</h1>
+            <p class="text-primary-100 dark:text-primary-200 text-lg">Browse thousands of opportunities from top companies</p>
+        </div>
+    </div>
+</section>
+
+<div class="max-w-6xl mx-auto px-4 py-8">
+    <form method="get" class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-4 mb-8" hx-get="{% url 'home' %}" hx-target="#job-list" hx-swap="innerHTML" hx-trigger="input changed delay:300ms, change">
+        <div class="flex flex-wrap gap-4">
+            <div class="flex-1 min-w-[200px]">
+                <input type="text" name="search" value="{{ search }}" placeholder="Search jobs or companies..." class="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+            </div>
+            <div class="w-40">
+                <select name="job_type" class="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                    <option value="">All Types</option>
+                    {% for value, label in job_types %}
+                    <option value="{{ value }}" {% if job_type == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="w-48">
+                <select name="location" class="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                    <option value="">All Locations</option>
+                    {% for loc in locations %}
+                    <option value="{{ loc }}" {% if location_filter == loc %}selected{% endif %}>{{ loc }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% if search or job_type or location_filter %}
+            <a href="{% url 'home' %}" class="px-4 py-2 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                Clear
+            </a>
+            {% endif %}
+        </div>
+    </form>
+
+    <div class="mb-6 flex items-center justify-between">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-slate-100">Available Positions</h2>
+        <span class="text-sm text-slate-500 dark:text-slate-400" id="job-count">{{ jobs|length }} job{{ jobs|length|pluralize }}</span>
+    </div>
+
+    <div id="job-list" class="htmx-indicator">
+        <div class="flex justify-center py-12">
+            <svg class="animate-spin h-8 w-8 text-primary-600 dark:text-primary-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+        </div>
+    </div>
+
+    <div id="job-list" hx-swap="innerHTML" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% include 'jobs/partials/job_list.html' %}
+    </div>
+</div>
+{% endblock %}
